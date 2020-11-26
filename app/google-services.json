@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1056104909295",
+    "firebase_url": "https://gs-store-6ca34.firebaseio.com",
+    "project_id": "gs-store-6ca34",
+    "storage_bucket": "gs-store-6ca34.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056104909295:android:6e25f75030cc51c3f94e1a",
+        "android_client_info": {
+          "package_name": "com.appsfy.gs_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1056104909295-j86lbje589qf4o7jssr0lt7vo3phq4vp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZoRKAD9b0vlj7fF2urJgh0-btm2JofW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1056104909295-j86lbje589qf4o7jssr0lt7vo3phq4vp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
