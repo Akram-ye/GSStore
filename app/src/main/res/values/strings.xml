@@ -4,10 +4,10 @@
     <string name="product_details_title">تفاصيل المنتج</string>
     <string name="scan_code">إمسح الكود</string>
     <string name="product_title_placeholder">المنتج</string>
-    <string name="product_price_placeholder">850</string>
+    <string name="product_price_placeholder">000</string>
     <string name="yemeni_rail">ريال</string>
-    <string name="product_number_placeholder">1236587963215</string>
-    <string name="product_date_placeholder">12/5/2020</string>
+    <string name="product_number_placeholder">0000000000000</string>
+    <string name="product_date_placeholder">00/00/0000</string>
     <string name="date_placeholder">التاريخ</string>
     <string name="delete_button_CD">Delete Button</string>
     <string name="edit_button_CD">Edit Button</string>

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -37,29 +36,32 @@ public class ResultActivity extends AppCompatActivity {
         db.collection("products")
                 .whereEqualTo("product_number", barcode)
                 .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            showMsg("Product Found ");
+                        } else {
+                            showMsg("No product found!");
+                        }
+                    }
+                })
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document.exists()) {
-                                    loadData(document);
-                                    Log.d("doc", "document found ");
-                                } else {
-                                    Toast.makeText(ResultActivity.this, "No product found", Toast.LENGTH_SHORT).show();
-                                }
+                                loadData(document);
                             }
-
                         } else {
-                            Log.d("F-TAG", "get failed with  ", task.getException());
+                            showMsg("Get failed with "+task.getException());
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("F-TAG", e.toString());
+                        showMsg("Failure With" + e.getMessage().toString());
                     }
                 });
         TextView productNumber = findViewById(R.id.product_number);
@@ -68,12 +70,15 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     public void loadData(QueryDocumentSnapshot documentSnapshot) {
+
         TextView product_name, product_price, product_date, product_notes;
+        // Reference Items
         product_name = findViewById(R.id.product_name);
         product_price = findViewById(R.id.product_price);
         product_date = findViewById(R.id.product_date);
         product_notes = findViewById(R.id.product_notes);
 
+        // Set TextView values
         product_name.setText(documentSnapshot.get("product_name").toString());
         product_price.setText(documentSnapshot.get("product_price").toString());
         product_date.setText(documentSnapshot.get("product_date").toString());
@@ -81,6 +86,10 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
+
+    public void showMsg(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+    }
 
     public void transparentToolbar() {
         if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
