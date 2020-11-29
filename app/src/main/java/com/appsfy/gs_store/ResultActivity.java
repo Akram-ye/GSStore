@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -24,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class ResultActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    TextView product_number, product_name, product_price, product_date, product_notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,52 +32,41 @@ public class ResultActivity extends AppCompatActivity {
 
         String barcode = getIntent().getStringExtra("barcode");
 
-        db.collection("products")
-                .whereEqualTo("product_number", barcode)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            showMsg("Product Found ");
-                        } else {
-                            showMsg("No product found!");
-                        }
-                    }
-                })
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                loadData(document);
-                            }
-                        } else {
-                            showMsg("Get failed with "+task.getException());
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        showMsg("Failure With" + e.getMessage().toString());
-                    }
-                });
-        TextView productNumber = findViewById(R.id.product_number);
-        productNumber.setText(barcode);
-
-    }
-
-    public void loadData(QueryDocumentSnapshot documentSnapshot) {
-
-        TextView product_name, product_price, product_date, product_notes;
-        // Reference Items
+        product_number = findViewById(R.id.product_number);
         product_name = findViewById(R.id.product_name);
         product_price = findViewById(R.id.product_price);
         product_date = findViewById(R.id.product_date);
         product_notes = findViewById(R.id.product_notes);
 
+        getDataFromFirebase(barcode);
+
+    }
+
+    public void getDataFromFirebase(String barcode){
+        db.collection("products")
+                .whereEqualTo("product_number", barcode)
+                .get()
+                .addOnCompleteListener(this, new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot documentSnapshot = task.getResult();
+                            if (!documentSnapshot.isEmpty()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    loadData(document);
+                                }
+                            } else {
+                                showMsg("No product found!");
+                            }
+                        } else {
+                            showMsg("Get failed with \n" + task.getException());
+                        }
+                    }
+                });
+    }
+    public void loadData(QueryDocumentSnapshot documentSnapshot) {
         // Set TextView values
+        product_number.setText(documentSnapshot.get("product_number").toString());
         product_name.setText(documentSnapshot.get("product_name").toString());
         product_price.setText(documentSnapshot.get("product_price").toString());
         product_date.setText(documentSnapshot.get("product_date").toString());
