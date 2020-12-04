@@ -55,7 +55,7 @@
                 android:id="@+id/product_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
                 android:text="@string/product_price_placeholder"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
@@ -83,6 +83,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/edit_product_btn"
                     android:layout_width="45dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -98,6 +99,7 @@
                     android:background="@drawable/btn_bg" />
 
                 <ImageButton
+                    android:id="@+id/delete_product_btn"
                     android:layout_width="45dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -123,7 +125,7 @@
                 android:id="@+id/product_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center_horizontal"
                 android:text="@string/product_number_placeholder"
                 android:textAlignment="center"
                 android:textColor="@color/main_color"
@@ -186,6 +188,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="7dp"
+
                 android:text="@string/lorem_ipsum"
                 android:textColor="@color/main_color"
                 android:textSize="9pt" />

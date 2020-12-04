@@ -45,9 +45,7 @@ public class ScanActivity extends AppCompatActivity implements BarcodeReader.Bar
     public void onScanned(Barcode barcode) {
         barcodeReader.playBeep();
 
-
         String bc = barcode.displayValue;
-
         Intent intent = new Intent(ScanActivity.this, ResultActivity.class);
         intent.putExtra("barcode",bc);
         startActivity(intent);
@@ -55,7 +53,7 @@ public class ScanActivity extends AppCompatActivity implements BarcodeReader.Bar
     }
 
     @Override
-    public void onScannedMultiple(List<Barcode> barcodes) {
+    public void onScannedMultiple(List<Barcode> barCodes) {
 
     }
 
@@ -66,7 +64,7 @@ public class ScanActivity extends AppCompatActivity implements BarcodeReader.Bar
 
     @Override
     public void onScanError(String errorMessage) {
-        Toast.makeText(getApplicationContext(), "Error occurred while scanning " + errorMessage, Toast.LENGTH_LONG);
+        Toast.makeText(getApplicationContext(), "Error occurred while scanning " + errorMessage, Toast.LENGTH_LONG).show();
     }
 
 }
