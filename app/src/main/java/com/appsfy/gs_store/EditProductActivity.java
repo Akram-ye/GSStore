@@ -69,31 +69,28 @@ public class EditProductActivity extends AppCompatActivity {
         db.collection("products")
                 .whereEqualTo("product_number", barCode)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                String docId = documentSnapshot.getId();
-                                db.collection("products")
-                                        .document(docId)
-                                        .update(product)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
+                .addOnCompleteListener(this,task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            String docId = documentSnapshot.getId();
+                            db.collection("products")
+                                    .document(docId)
+                                    .update(product)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
 
-                                                    Toast.makeText(EditProductActivity.this, "تم تعديل المنتج بنجاح ✔", Toast.LENGTH_SHORT).show();
-                                                } else
-                                                    Toast.makeText(EditProductActivity.this, "فشل تعديل المنتج  ❌", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                                Toast.makeText(EditProductActivity.this, "تم تعديل المنتج بنجاح ✔", Toast.LENGTH_SHORT).show();
+                                            } else
+                                                Toast.makeText(EditProductActivity.this, "فشل تعديل المنتج  ❌", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
-                            }
-
-                        } else {
-                            Toast.makeText(EditProductActivity.this, "ERROR: " + task.getException(), Toast.LENGTH_SHORT).show();
                         }
+
+                    } else {
+                        Toast.makeText(EditProductActivity.this, "ERROR: " + task.getException(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -104,21 +101,18 @@ public class EditProductActivity extends AppCompatActivity {
         db.collection("products")
                 .whereEqualTo("product_number", barcode)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot documentSnapshot = task.getResult();
-                            if (!documentSnapshot.isEmpty()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    loadData(document);
-                                }
-                            } else {
-                                Toast.makeText(EditProductActivity.this, "لا يوجد منتج مرتبط", Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot documentSnapshot = task.getResult();
+                        if (!documentSnapshot.isEmpty()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                loadData(document);
                             }
                         } else {
-                            Toast.makeText(EditProductActivity.this, "ERROR: " + task.getException(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProductActivity.this, "لا يوجد منتج مرتبط", Toast.LENGTH_SHORT).show();
                         }
+                    } else {
+                        Toast.makeText(EditProductActivity.this, "ERROR: " + task.getException(), Toast.LENGTH_SHORT).show();
                     }
                 });
 

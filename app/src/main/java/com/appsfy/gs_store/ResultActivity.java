@@ -13,8 +13,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -23,7 +26,7 @@ public class ResultActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView product_number, product_name, product_price, product_date, product_notes;
-    ImageButton editBtn ;
+    ImageButton editBtn, deleteBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class ResultActivity extends AppCompatActivity {
         String barcode = getIntent().getStringExtra("barcode");
 
         editBtn = findViewById(R.id.edit_product_btn);
+        deleteBtn = findViewById(R.id.delete_product_btn);
 
 
         product_number = findViewById(R.id.product_number);
@@ -46,11 +50,58 @@ public class ResultActivity extends AppCompatActivity {
         editBtn.setOnClickListener(v -> {
 
             Intent intent = new Intent(ResultActivity.this, EditProductActivity.class);
-            intent.putExtra("product_code",barcode);
+            intent.putExtra("product_code", barcode);
             startActivity(intent);
         });
 
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+
+                builder.setTitle("حذف منتج")
+                        .setMessage("هل تريد حذف المنتج؟")
+                        .setCancelable(false)
+                        .setPositiveButton("موافق", (dialog, which) -> deleteProduct(barcode))
+                        .setNegativeButton("الغاء", ((dialog, which) -> dialog.dismiss()))
+                        .show();
+            }
+        });
+
         getDataFromFirebase(barcode);
+
+    }
+
+    private void deleteProduct(String barcode) {
+
+        db.collection("products")
+                .whereEqualTo("product_number", barcode)
+                .get()
+                .addOnCompleteListener(this,task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            String docId = documentSnapshot.getId();
+                            db.collection("products")
+                                    .document(docId)
+                                    .delete()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(ResultActivity.this, "تم حذف المنتج بنجاح ✔", Toast.LENGTH_SHORT).show();
+                                                finish();
+                                                startActivity(new Intent(ResultActivity.this,ScanActivity.class));
+                                            } else
+                                                Toast.makeText(ResultActivity.this, "فشل حذف المنتج  ❌", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                        }
+
+                    } else {
+                        Toast.makeText(ResultActivity.this, "ERROR: " + task.getException(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -68,7 +119,7 @@ public class ResultActivity extends AppCompatActivity {
                                 loadData(document);
                             }
                         } else {
-                            showAlert("لا يوجد منتج", "هل تريد إضافة هذا المنتج",barcode);
+                            showAlert("لا يوجد منتج", "هل تريد إضافة هذا المنتج", barcode);
                             showMsg("No product found!");
 
                         }
@@ -89,17 +140,11 @@ public class ResultActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        recreate();
-    }
-
     public void showMsg(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
 
-    public void showAlert(String title, String msg,String barcode) {
+    public void showAlert(String title, String msg, String barcode) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
         builder
@@ -112,15 +157,16 @@ public class ResultActivity extends AppCompatActivity {
                     dialog.cancel();
                 })
                 .setNegativeButton("الغاء", (dialog, which) -> {
-                    dialog.cancel();
+                    dialog.dismiss();
                     finish();
-                }).show();
+                })
+                .show();
 
     }
 
-    public void addProductActivity(String barCode){
+    public void addProductActivity(String barCode) {
         Intent intent = new Intent(ResultActivity.this, AddProductActivity.class);
-        intent.putExtra("code",barCode);
+        intent.putExtra("code", barCode);
         startActivity(intent);
     }
 

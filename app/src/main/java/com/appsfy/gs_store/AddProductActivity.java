@@ -77,7 +77,7 @@ public class AddProductActivity extends AppCompatActivity {
 
         db.collection("products")
                 .add(product)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                .addOnCompleteListener(this,new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful()) {
