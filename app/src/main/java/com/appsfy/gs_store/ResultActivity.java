@@ -43,7 +43,12 @@ public class ResultActivity extends AppCompatActivity {
         product_notes = findViewById(R.id.product_notes);
 
 
-        editBtn.setOnClickListener(v -> startActivity(new Intent(ResultActivity.this,AddProductActivity.class)));
+        editBtn.setOnClickListener(v -> {
+
+            Intent intent = new Intent(ResultActivity.this, EditProductActivity.class);
+            intent.putExtra("product_code",barcode);
+            startActivity(intent);
+        });
 
         getDataFromFirebase(barcode);
 
@@ -56,8 +61,10 @@ public class ResultActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot documentSnapshot = task.getResult();
+
                         if (!documentSnapshot.isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+
                                 loadData(document);
                             }
                         } else {
@@ -81,6 +88,12 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recreate();
+    }
 
     public void showMsg(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();

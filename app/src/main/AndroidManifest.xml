@@ -11,6 +11,7 @@
         android:roundIcon="@drawable/gs_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.GSStore">
+        <activity android:name=".EditProductActivity"></activity>
         <activity android:name=".AddProductActivity" />
         <activity android:name=".ResultActivity" />
         <activity android:name=".ScanActivity" />

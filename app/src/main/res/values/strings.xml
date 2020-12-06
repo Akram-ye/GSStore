@@ -13,6 +13,7 @@
     <string name="edit_button_CD">Edit Button</string>
     <string name="lorem_ipsum">لوريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر.</string>
     <string name="add_product_title">إضافة منتج</string>
+    <string name="edit_product_title">تعديل منتج</string>
     <string name="p_name_hint">اسم المنتج</string>
     <string name="p_price_hint">السعر</string>
 
