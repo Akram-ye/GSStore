@@ -57,16 +57,16 @@
                 android:inputType="number"
                 android:padding="20dp" />
 
-            <com.hipo.maskededittext.MaskedEditText
+            <EditText
                 android:id="@+id/edit_product_date_et"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/edit_box_bg"
-                android:hint="@string/date_placeholder"
+                android:hint="@string/pattern_placeholder"
                 android:inputType="date"
-                android:padding="20dp"
-                app:maskType="date" />
+                android:padding="20dp" />
+
 
             <EditText
                 android:id="@+id/edit_product_notes_et"

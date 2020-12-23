@@ -52,6 +52,7 @@ public class ResultActivity extends AppCompatActivity {
             Intent intent = new Intent(ResultActivity.this, EditProductActivity.class);
             intent.putExtra("product_code", barcode);
             startActivity(intent);
+            finish();
         });
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -84,16 +85,13 @@ public class ResultActivity extends AppCompatActivity {
                             db.collection("products")
                                     .document(docId)
                                     .delete()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(ResultActivity.this, "تم حذف المنتج بنجاح ✔", Toast.LENGTH_SHORT).show();
-                                                finish();
-                                                startActivity(new Intent(ResultActivity.this,ScanActivity.class));
-                                            } else
-                                                Toast.makeText(ResultActivity.this, "فشل حذف المنتج  ❌", Toast.LENGTH_SHORT).show();
-                                        }
+                                    .addOnCompleteListener(this, task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            Toast.makeText(ResultActivity.this, "تم حذف المنتج بنجاح ✔", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                            startActivity(new Intent(ResultActivity.this,ScanActivity.class));
+                                        } else
+                                            Toast.makeText(ResultActivity.this, "فشل حذف المنتج  ❌", Toast.LENGTH_SHORT).show();
                                     });
 
                         }

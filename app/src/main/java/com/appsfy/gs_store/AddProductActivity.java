@@ -1,6 +1,7 @@
 package com.appsfy.gs_store;
 
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ public class AddProductActivity extends AppCompatActivity {
         String barcode = getIntent().getStringExtra("code");
         init(barcode);
 
+
+
         mAddProductBtn.setOnClickListener(v -> {
             String p_no = mProductNumber.getText().toString();
             String p_name = mProductName.getText().toString();
@@ -58,6 +61,9 @@ public class AddProductActivity extends AppCompatActivity {
         mProductNotes = findViewById(R.id.product_notes_et);
         mAddProductBtn = findViewById(R.id.add_product_btn);
 
+        TextWatcher dateFormatter = new DateFormatWatcher(mProductDate);
+        mProductDate.addTextChangedListener(dateFormatter);
+
         mProductNumber.setText(barcode);
 
 
@@ -77,15 +83,12 @@ public class AddProductActivity extends AppCompatActivity {
 
         db.collection("products")
                 .add(product)
-                .addOnCompleteListener(this,new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()) {
-                            finish();
-                            Toast.makeText(AddProductActivity.this, "تم إضافة المنتج بنجاح ✔", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(AddProductActivity.this, "error with " + task.getException(), Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        finish();
+                        Toast.makeText(AddProductActivity.this, "تم إضافة المنتج بنجاح ✔", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(AddProductActivity.this, "error with " + task.getException(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
